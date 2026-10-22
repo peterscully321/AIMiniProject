@@ -13,7 +13,7 @@ A collection of standalone problem domains implementing core Artificial Intellig
 ## 📊 Performance Metrics
 
 - **Graph Algorithms:** Compared runtimes of BFS and DFS on graphs with ~300 nodes.
-- **Alpha-Beta Pruning:** Demonstrated that Alpha-Beta pruning reduces Minimax node evaluations by ~40% across tested game states, significantly optimizing decision-making in adversarial environments.
+- **Alpha-Beta Pruning:** On simulated depth-6, branching-factor-4 game trees with random leaf values, Alpha-Beta pruning reduced Minimax node evaluations by ~74% on average (66–82% across the middle 90% of 2,000 random trials). A single run of `game_minimax.py` varies within that range.
 
 ## 🚀 Getting Started
 
@@ -23,9 +23,10 @@ A collection of standalone problem domains implementing core Artificial Intellig
 
 ### Installation
 
-1. **Navigate to the project directory**
+1. **Clone the repository**
    ```bash
-   cd e:/PROJECTS/outskill-main/AIMiniProjects
+   git clone https://github.com/peterscully321/AIMiniProject.git
+   cd AIMiniProject
    ```
 
 2. **Set up a Virtual Environment (Optional but recommended)**
@@ -62,7 +63,7 @@ python run_visualizer.py
 python graph_bfs_dfs.py
 ```
 
-**4. Evaluate Minimax Alpha-Beta Pruning (~40% reduction):**
+**4. Evaluate Minimax Alpha-Beta Pruning (~74% average reduction):**
 ```bash
 python game_minimax.py
 ```
@@ -70,10 +71,12 @@ python game_minimax.py
 ## 📂 Project Structure
 
 ```text
-AIMiniProjects/
+AIMiniProject/
 ├── pathfinding_a_star.py  # A* algorithm implementation
 ├── graph_bfs_dfs.py       # BFS and DFS runtime comparisons
 ├── game_minimax.py        # Minimax and Alpha-Beta pruning evaluations
-├── requirements.txt       # Dependencies (networkx, etc.)
+├── run_visualizer.py      # Local launcher for the A* web visualizer
+├── visualizer/            # Interactive A* visualizer (HTML, CSS, JavaScript)
+├── requirements.txt       # Dependencies (networkx, matplotlib)
 └── README.md              # Project documentation
 ```
