@@ -94,7 +94,7 @@ def main():
     
     print("-" * 40)
     print(f"Evaluation Reduction: {reduction:.2f}%")
-    print(f"(Expected ~40% reduction based on problem domain parameters)")
+    print("(Leaf values are random, so the reduction varies from run to run.)")
     
 if __name__ == "__main__":
     main()
