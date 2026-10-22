@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A* Pathfinding Visualizer — AI Mini Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation / Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-indicator">
+          <span class="pulse-ring"></span>
+          <span class="logo-core"></span>
+        </div>
+        <div class="brand-text">
+          <h1>A* Search Algorithm</h1>
+          <p class="subtitle">AI Mini Projects &bull; Heuristic Graph Exploration</p>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div class="status-pill" id="statusPill">
+          <span class="status-dot"></span>
+          <span class="status-text" id="statusText">Ready</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="app-main">
+      <!-- Control Deck -->
+      <aside class="control-panel">
+        <div class="panel-section">
+          <h2 class="section-title">Execution Controls</h2>
+          <div class="btn-group-primary">
+            <button id="btnVisualize" class="btn btn-primary">
+              <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+              </svg>
+              <span>Visualize A*</span>
+            </button>
+            <button id="btnStep" class="btn btn-secondary" title="Execute single step in search">
+              <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+              <span>Step</span>
+            </button>
+          </div>
+
+          <div class="btn-group-secondary">
+            <button id="btnClearPath" class="btn btn-ghost">Clear Path</button>
+            <button id="btnClearWalls" class="btn btn-ghost">Clear Walls</button>
+            <button id="btnResetAll" class="btn btn-ghost danger">Reset All</button>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <h2 class="section-title">Configuration</h2>
+          
+          <div class="control-field">
+            <label for="heuristicSelect">Heuristic Metric</label>
+            <div class="select-wrapper">
+              <select id="heuristicSelect">
+                <option value="euclidean" selected>Euclidean Distance (Default in script)</option>
+                <option value="manhattan">Manhattan Distance</option>
+                <option value="chebyshev">Chebyshev / Diagonal</option>
+                <option value="octile">Octile Distance</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-field">
+            <label for="movementSelect">Movement Directions</label>
+            <div class="select-wrapper">
+              <select id="movementSelect">
+                <option value="8" selected>8 Directions (Diagonal &amp; Orthogonal)</option>
+                <option value="4">4 Directions (Orthogonal Only)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-field">
+            <label for="mazeSelect">Maze &amp; Obstacles</label>
+            <div class="select-wrapper">
+              <select id="mazeSelect">
+                <option value="" disabled selected>Generate Obstacles...</option>
+                <option value="random">Random 20% (pathfinding_a_star.py)</option>
+                <option value="dense">Dense Field (35% density)</option>
+                <option value="recursive">Recursive Division Maze</option>
+                <option value="canyon">Winding Canyons</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-field">
+            <div class="slider-label">
+              <span>Animation Speed</span>
+              <span id="speedDisplay" class="value-badge">Fast</span>
+            </div>
+            <input type="range" id="speedSlider" min="1" max="5" value="4" step="1">
+            <div class="slider-ticks">
+              <span>Step</span>
+              <span>Slow</span>
+              <span>Norm</span>
+              <span>Fast</span>
+              <span>Instant</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <h2 class="section-title">Telemetry &amp; Benchmarks</h2>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-label">Path Status</span>
+              <span class="metric-value status-val" id="metricStatus">—</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Execution Time</span>
+              <span class="metric-value" id="metricTime">0.00 ms</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Path Length</span>
+              <span class="metric-value" id="metricLength">0 steps</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Path Cost</span>
+              <span class="metric-value" id="metricCost">0.00</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Open Set</span>
+              <span class="metric-value" id="metricOpen">0</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Closed Set (Visited)</span>
+              <span class="metric-value" id="metricClosed">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <h2 class="section-title">Inspected Cell</h2>
+          <div class="inspector-card" id="inspectorCard">
+            <div class="inspector-row">
+              <span class="prop-key">Coordinates:</span>
+              <span class="prop-val" id="inspCoord">(—, —)</span>
+            </div>
+            <div class="inspector-row">
+              <span class="prop-key">State:</span>
+              <span class="prop-val" id="inspState">Empty</span>
+            </div>
+            <div class="inspector-row">
+              <span class="prop-key">g(n) [Cost from Start]:</span>
+              <span class="prop-val font-mono" id="inspG">—</span>
+            </div>
+            <div class="inspector-row">
+              <span class="prop-key">h(n) [Heuristic to Goal]:</span>
+              <span class="prop-val font-mono" id="inspH">—</span>
+            </div>
+            <div class="inspector-row">
+              <span class="prop-key">f(n) [g + h]:</span>
+              <span class="prop-val font-mono" id="inspF">—</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Interactive Canvas Stage -->
+      <section class="stage-container">
+        <!-- Legend bar -->
+        <div class="legend-bar">
+          <div class="legend-item">
+            <span class="swatch swatch-start"></span>
+            <span>Start Node (Drag)</span>
+          </div>
+          <div class="legend-item">
+            <span class="swatch swatch-goal"></span>
+            <span>Goal Node (Drag)</span>
+          </div>
+          <div class="legend-item">
+            <span class="swatch swatch-wall"></span>
+            <span>Obstacle / Wall</span>
+          </div>
+          <div class="legend-item">
+            <span class="swatch swatch-open"></span>
+            <span>Open Set (Frontier)</span>
+          </div>
+          <div class="legend-item">
+            <span class="swatch swatch-closed"></span>
+            <span>Closed Set (Visited)</span>
+          </div>
+          <div class="legend-item">
+            <span class="swatch swatch-path"></span>
+            <span>Optimal Path</span>
+          </div>
+        </div>
+
+        <!-- Canvas Wrapper -->
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <canvas id="gridCanvas"></canvas>
+          <div class="canvas-hint" id="canvasHint">
+            <span>Left-click + drag to draw walls &bull; Right-click to erase &bull; Drag Start (S) or Goal (G)</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="a_star.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
