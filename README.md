@@ -2,6 +2,8 @@
 
 A collection of standalone problem domains implementing core Artificial Intelligence algorithms in Python, focusing on pathfinding, graph traversal, and game trees.
 
+🌐 **Live Interactive Visualizer:** [https://peterscully321.github.io/AIMiniProject/](https://peterscully321.github.io/AIMiniProject/)
+
 ## 🌟 Key Implementations
 
 - **A* Pathfinding (`pathfinding_a_star.py`):** Implements the A* search algorithm using the Euclidean distance heuristic to find the shortest path in a 2D grid with randomly generated obstacles.
